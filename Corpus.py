@@ -12,6 +12,8 @@ class Corpus:
         self.ndoc = 0
         self.naut = 0
 
+        
+
     def add_document(self, document):
         """
         Ajoute un document au corpus et met à jour les auteurs.

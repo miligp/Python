@@ -4,7 +4,8 @@ from Document import DocumentFactory
 import praw
 import urllib.request
 import xmltodict
-
+from Recherche import construire_vocabulaire, construire_matrice_TF, construire_matrice_TFIDF, recherche, afficher_resultats
+from tabulate import tabulate
 
 # Configuration pour récupérer les données Reddit
 REDDIT_CLIENT_ID = '2IwlmGw7CnMx_lNz12WACw'
@@ -51,6 +52,7 @@ def fetch_arxiv_papers(keyword, max_results=100):
 # Main script
 if __name__ == "__main__":
     filename = "Food_corpus.pkl"
+    keyword = "digital" 
 
     # Vérifier si un corpus existe déjà
     if os.path.exists(filename):
@@ -82,11 +84,10 @@ if __name__ == "__main__":
 
     # Étape 2 : Rechercher un mot-clé
     print("\n=== Recherche d'un mot-clé ===")
-    keyword = "food"  # Changez le mot-clé si nécessaire
     results = corpus.search(keyword)
 
     if results:
-        # Limiter à 50 résultats maximum
+        # Limiter à 10 résultats maximum
         limited_results = results[:10]
         for idx, result in enumerate(limited_results, 1):
             print(f"{idx}: {result}")
@@ -98,6 +99,40 @@ if __name__ == "__main__":
     concorde = corpus.concorde(keyword, taille=30)
     print(concorde)
 
-    # Étape 4 : Afficher des statistiques
-    print("\n=== Statistiques ===")
-    corpus.stats(nreturn=10)
+
+    # Intégration des fonctionnalités de recherche avancée
+    # Construction du vocabulaire
+    print("\nConstruction du vocabulaire...")
+    vocabulaire = construire_vocabulaire(corpus)
+    print(f"Vocabulaire construit : {len(vocabulaire)} mots.")
+
+    # Construction de la matrice TF
+    print("\nConstruction de la matrice TF...")
+    mat_TF = construire_matrice_TF(corpus, vocabulaire)
+    print(f"Matrice TF construite : {mat_TF.shape}.")
+
+    # Construction de la matrice TF-IDF
+    print("\nConstruction de la matrice TF-IDF...")
+    mat_TFIDF = construire_matrice_TFIDF(mat_TF, vocabulaire)
+    print(f"Matrice TF-IDF construite : {mat_TFIDF.shape}.")
+
+    # Étape 5 : Rechercher un mot-clé avec le modèle TF-IDF
+    print(f"\n=== Recherche pour le mot : '{keyword}' ===")
+    scores, most_similar_docs = recherche(mat_TFIDF, vocabulaire, keyword)
+
+    if scores is not None:
+        resultats = []
+        # Parcourir les indices des documents pertinents
+        for doc_idx in most_similar_docs[:3]:  # Récupérer les 3 documents les plus pertinents
+            doc_id = doc_idx + 1
+            doc_text = corpus.id2doc[f'D{doc_id}'].text[:250]  # Extraire les 250 premiers caractères du document
+            resultats.append({
+                "Document ID": doc_id,
+                "Score de similarité": round(scores[doc_idx], 4),
+                "Contenu": doc_text
+            })
+        
+        # Afficher les résultats
+        afficher_resultats(resultats, max_content_len=100)
+    else:
+        print("Aucun résultat pertinent.")
