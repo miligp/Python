@@ -90,7 +90,7 @@ if __name__ == "__main__":
 
     # Étape 2 : Rechercher un mot-clé simple
     print("\n=== Recherche simple d'un mot-clé ===")
-    results = corpus.search(keyword)
+    results = corpus.occurence(keyword)
 
     if results:
         # Limiter à 10 résultats maximum
