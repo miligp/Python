@@ -5,6 +5,7 @@ import praw
 import urllib.request
 import xmltodict
 from Recherche import SearchEngine
+from tqdm import tqdm
 
 # Configuration pour récupérer les données Reddit
 REDDIT_CLIENT_ID = '2IwlmGw7CnMx_lNz12WACw'
@@ -62,13 +63,13 @@ if __name__ == "__main__":
 
         # Ajouter des documents Reddit
         reddit_data = fetch_reddit_posts("Food", limit=100)
-        for post in reddit_data:
+        for post in tqdm(reddit_data, desc="Ajout des posts Reddit"):
             doc = DocumentFactory.create_document("reddit", post['title'], post['author'], post['date'], post['url'], post['text'], post['comments'])
             corpus.add_document(doc)
 
         # Ajouter des documents Arxiv
         arxiv_data = fetch_arxiv_papers("Food", max_results=100)
-        for paper in arxiv_data:
+        for paper in tqdm(arxiv_data, desc="Ajout des articles Arxiv"): 
             doc = DocumentFactory.create_document("arxiv", paper['title'], paper['author'], paper['date'], paper['url'], paper['text'], paper['co_authors'])
             corpus.add_document(doc)
 

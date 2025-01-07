@@ -3,3 +3,4 @@ pickle
 praw
 urllib.request
 xmltodict
+tqdm

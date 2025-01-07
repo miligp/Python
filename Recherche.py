@@ -3,6 +3,7 @@ import numpy as np
 import scipy.sparse as sp
 from Corpus import Corpus
 import pandas as pd
+from tqdm import tqdm
 
 class SearchEngine:
     def __init__(self, corpus):
@@ -97,7 +98,9 @@ class SearchEngine:
         
         if scores is not None:
             resultats = []
-            for doc_idx in most_similar_docs[:n_results]:
+            for doc_idx in tqdm(most_similar_docs[:n_results],
+                              desc="Formatage des résultats",
+                              total=min(n_results, len(most_similar_docs))):
                 doc_id = doc_idx + 1
                 doc_text = self.corpus.id2doc[f'D{doc_id}'].text[:250]
                 resultats.append({
