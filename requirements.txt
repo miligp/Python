@@ -4,3 +4,4 @@ praw
 urllib.request
 xmltodict
 tqdm
+ipywidgets
