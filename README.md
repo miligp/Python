@@ -21,6 +21,8 @@ Ce projet est un moteur de recherche conçu pour analyser un corpus textuel que 
 ## Utilisation du moteur de recherche 
 
 Après avoir cloné le programme et vérifié si le corpus Food_corpus.pkl est présent, il faut lancer le notebook (Jupyter) Interface.ipynb et lancer le « run all». 
+
 Pour effectuer une recherche, il faut se trouver dans l'interface : Moteur de recherche contenue dans le Note Book. 
+
 Vous trouverez une case Mot-cl. Il suffira d'entrer le mot, de choisir un nombre de documents que vous voulez voir apparaitre et de cliquer sur rechercher pour trouver des documents du corpus en rapport avec votre mot. 
 
